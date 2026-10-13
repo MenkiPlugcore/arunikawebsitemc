@@ -29,5 +29,8 @@ for(const saved of [...codes,'invalid']){
  assert(refreshCount>10);
 }
 assert(fs.existsSync(path.join(dist,'assets/arunika-hero.png')));
-assert.equal(fs.readFileSync(path.join(root,'wrangler.toml'),'utf8').match(/pages_build_output_dir\s*=\s*"([^"]+)"/)[1],'./dist');
-console.log('Passed: syntax, assets, routes, ARUNIKA branding, 10 languages, persistence, fallback, Arabic RTL, Pages output.');
+const workerConfig=fs.readFileSync(path.join(root,'wrangler.toml'),'utf8');
+assert(!workerConfig.includes('pages_build_output_dir'),'Workers config must not use the Pages output key');
+assert.match(workerConfig,/\[assets\][\s\S]*directory\s*=\s*"\.\/dist"/,'Workers must serve dist as static assets');
+assert.equal(fs.readFileSync(path.join(root,'wrangler.pages.toml'),'utf8').match(/pages_build_output_dir\s*=\s*"([^"]+)"/)[1],'./dist');
+console.log('Passed: syntax, assets, routes, ARUNIKA branding, 10 languages, persistence, fallback, Arabic RTL, Workers assets, Pages output.');

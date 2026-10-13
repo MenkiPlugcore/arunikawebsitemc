@@ -4,9 +4,40 @@ Website pusat informasi server Minecraft ARUNIKA. Tema wheat dan putih, logo ARU
 
 Halaman: Beranda, About, Leaderboard, Store, dan Live Map. Tata letak bahasa Arab memakai RTL. Preferensi bahasa tersimpan di browser. Tidak membutuhkan framework atau dependency untuk menjalankan website.
 
-## Deploy ke Cloudflare Pages
+## Deploy ke Cloudflare Workers (sesuai project saat ini)
 
-Di dashboard Cloudflare, buka **Workers & Pages → Create application → Pages → Import an existing Git repository**, lalu pilih **MenkiPlugcore/arunikawebsitemc**.
+Konfigurasi default `wrangler.toml` memakai **Workers Static Assets** untuk melayani isi folder `dist`. Website statis ini tidak membutuhkan script Worker `main`.
+
+Di pengaturan build Cloudflare untuk project yang sudah terhubung ke repository **MenkiPlugcore/arunikawebsitemc**, gunakan:
+
+| Pengaturan | Nilai |
+| --- | --- |
+| Production branch | `main` |
+| Build command | `npm run build` |
+| Deploy command | `npx wrangler deploy` |
+| Root directory | kosong / root repository |
+| Worker name | `arunikawebsitemc` (sesuaikan `name` di konfigurasi jika berbeda) |
+| Environment variables aplikasi | belum diperlukan |
+
+Setelah commit perbaikan masuk ke `main`, gunakan build baru yang mengambil commit tersebut. Integrasi Cloudflare yang sudah terhubung dapat memulai build otomatis. Jangan memakai log build lama sebagai hasil pemeriksaan commit baru.
+
+Konfigurasi default:
+
+```toml
+name = "arunikawebsitemc"
+compatibility_date = "2026-10-13"
+
+[assets]
+directory = "./dist"
+```
+
+Log yang menjalankan `npx wrangler deploy` menunjukkan alur Workers. Key `pages_build_output_dir` khusus Pages tidak dipakai di konfigurasi default karena tidak menyediakan direktori assets bagi alur Workers.
+
+Referensi resmi: [Migrasi Pages ke Workers](https://developers.cloudflare.com/workers/static-assets/migration-guides/migrate-from-pages/) dan [Konfigurasi Workers assets](https://developers.cloudflare.com/workers/wrangler/configuration/#assets).
+
+## Alternatif: Cloudflare Pages
+
+Jika sengaja ingin membuat project **Pages** terpisah, pilih **Workers & Pages → Create application → Pages → Import an existing Git repository** lalu pilih repository ini.
 
 | Pengaturan | Nilai |
 | --- | --- |
@@ -15,19 +46,16 @@ Di dashboard Cloudflare, buka **Workers & Pages → Create application → Pages
 | Build command | `exit 0` |
 | Build output directory | `dist` |
 | Root directory | kosong / root repository |
-| Environment variables | belum diperlukan |
 
-Klik **Save and Deploy**. Pilih **Pages** untuk konfigurasi di atas. Website adalah HTML/CSS/JavaScript statis; tidak perlu mengunggah folder lain ke output Pages. `dist/index.html` adalah halaman utama dan navigasi memakai hash (`#about`, `#store`, dan seterusnya).
-
-Konfigurasi CLI tersedia dalam `wrangler.toml`. Untuk deploy manual dari komputer yang sudah terhubung ke akun Cloudflare:
+Konfigurasi Pages opsional tersedia dalam `wrangler.pages.toml`. Untuk deploy Pages manual dari komputer yang sudah terhubung ke akun Cloudflare dan memiliki project Pages:
 
 ```sh
-npx wrangler pages deploy dist --project-name arunikawebsitemc
+npx wrangler pages deploy dist --config wrangler.pages.toml --project-name arunikawebsitemc
 ```
 
-Nama project harus sesuai dengan project Pages yang dibuat di akunmu. Tidak ada token Cloudflare atau GitHub di repository.
+Nama project harus sesuai dengan project Pages di akunmu. Tidak ada token Cloudflare atau GitHub di repository.
 
-Referensi resmi: [Static HTML on Cloudflare Pages](https://developers.cloudflare.com/pages/framework-guides/deploy-anything/) dan [Wrangler configuration for Pages](https://developers.cloudflare.com/pages/functions/wrangler-configuration/).
+Referensi resmi: [Static HTML on Cloudflare Pages](https://developers.cloudflare.com/pages/framework-guides/deploy-anything/).
 
 ## Pengaturan server
 
