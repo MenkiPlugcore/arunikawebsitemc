@@ -128,3 +128,7 @@ Kartu berada di `dist/assets/ranks/` sebagai WebP lossless dengan ukuran dan tam
 ## Halaman About
 
 Menampilkan cosmetic unik, furniture custom, mount/pet yang bisa ditunggangi, dan 13 fitur dari pengelola: Player Shop, Auction, Auto Capicator (Shift untuk satu batang), Auto Stack Item Drop + Mob, Rank Berbayar Ingame, Modeling, Gacha, Vote, Quests, Storyline ARUNIKA, 5 SL, AURA SKILL, dan Custom Enchant (Advanced Enchantments). Istilah SL dipertahankan tanpa perluasan karena pengelola belum memberi kepanjangannya.
+
+## Ilustrasi kartu fitur
+
+Sepuluh gambar kiriman pengelola dipasang pada Player Shop, Auction, Auto Capicator, Auto Stack Item Drop + Mob, Rank Berbayar Ingame, Modeling, Gacha, Vote, Quests, dan Storyline ARUNIKA. File web tersedia di `dist/assets/features/` dalam WebP kualitas tinggi (ukuran 1672 × 941 tetap dipertahankan, komposisi penuh). Gambar memakai lazy loading. Judul/deskripsi HTML tetap diterjemahkan ke 10 bahasa; tulisan dalam gambar mengikuti sumber Bahasa Indonesia. Tiga kartu lain (5 SL, AURA SKILL, Custom Enchant) mempertahankan ikon dan teks sambil menunggu gambar.
