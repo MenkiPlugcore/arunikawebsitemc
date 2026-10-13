@@ -5,7 +5,7 @@ import assert from 'node:assert/strict';
 import {execFileSync} from 'node:child_process';
 const root=new URL('../',import.meta.url).pathname;
 const dist=path.join(root,'dist');
-for(const name of ['app.js','config.js','i18n.js','translations.js'])execFileSync(process.execPath,['--check',path.join(dist,name)]);
+for(const name of ['app.js','config.js','i18n.js','translations.js','feature-slider.js'])execFileSync(process.execPath,['--check',path.join(dist,name)]);
 const html=fs.readFileSync(path.join(dist,'index.html'),'utf8');
 const ids=[...html.matchAll(/\bid="([^"]+)"/g)].map(x=>x[1]);assert.equal(new Set(ids).size,ids.length,'Duplicate HTML IDs');
 for(const [,hash] of html.matchAll(/href="#([^"]+)"/g))assert(ids.includes(hash),`Unknown section ${hash}`);
@@ -45,4 +45,5 @@ productCards.forEach((card,index)=>{
  assert.equal(card.target,'_blank');assert(card.rel.includes('noopener'));assert(card.rel.includes('noreferrer'));
 });
 
+execFileSync(process.execPath,[path.join(root,'scripts/check-feature-slider.mjs')],{stdio:'inherit'});
 console.log('Passed: syntax, assets, routes, ARUNIKA branding, 10 languages, persistence, fallback, Arabic RTL, Workers assets, Pages output, rank order/prices/WhatsApp links.');

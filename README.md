@@ -132,3 +132,10 @@ Menampilkan cosmetic unik, furniture custom, mount/pet yang bisa ditunggangi, da
 ## Ilustrasi kartu fitur
 
 Ketiga belas kartu fitur memakai gambar kiriman pengelola. Batch pertama meliputi Player Shop, Auction, Auto Capicator, Auto Stack Item Drop + Mob, Rank Berbayar Ingame, Modeling, Gacha, Vote, Quests, dan Storyline ARUNIKA (1672 × 941). Batch kedua melengkapi AURA SKILL dan Custom Enchant (1920 × 1080). Fitur 5 Senjata Legend menggunakan ilustrasi terbaru pengelola (1536 × 864). File web tersedia di `dist/assets/features/` dalam WebP kualitas tinggi, dengan ukuran asli dan komposisi penuh dipertahankan. Gambar memakai lazy loading. Judul/deskripsi HTML tetap diterjemahkan ke 10 bahasa; tulisan dalam gambar mengikuti sumber Bahasa Indonesia.
+
+
+## Slider fitur
+
+Galeri About menampilkan satu dari 13 fitur pada satu waktu. Gambar tampil utuh dengan keterangan di samping pada layar lebar dan di bawah pada HP. Navigasi memakai panah, penanda slide, geser gambar, dan keyboard (Left/Right, Home, End); slide pertama dan terakhir saling tersambung. Arah navigasi mengikuti Arabic RTL, dan pergantian bahasa mempertahankan fitur aktif. Label kontrol serta pengumuman pembaca layar tersedia dalam 10 bahasa.
+
+Slider memakai JavaScript native tanpa dependency atau autoplay. Efek perpindahan berupa transform/opacity singkat dan mengikuti pengaturan reduced motion. Gambar tetap memakai lazy loading. Jika JavaScript tidak aktif, galeri tetap bisa digeser horizontal melalui CSS scroll snap.
