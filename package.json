@@ -1,0 +1,11 @@
+{
+  "name": "arunika-website-mc",
+  "version": "1.0.0",
+  "private": true,
+  "description": "ARUNIKA Minecraft community website",
+  "scripts": {
+    "check": "node scripts/check.mjs",
+    "build": "npm run check"
+  },
+  "engines": { "node": ">=20" }
+}
