@@ -33,4 +33,16 @@ const workerConfig=fs.readFileSync(path.join(root,'wrangler.toml'),'utf8');
 assert(!workerConfig.includes('pages_build_output_dir'),'Workers config must not use the Pages output key');
 assert.match(workerConfig,/\[assets\][\s\S]*directory\s*=\s*"\.\/dist"/,'Workers must serve dist as static assets');
 assert.equal(fs.readFileSync(path.join(root,'wrangler.pages.toml'),'utf8').match(/pages_build_output_dir\s*=\s*"([^"]+)"/)[1],'./dist');
-console.log('Passed: syntax, assets, routes, ARUNIKA branding, 10 languages, persistence, fallback, Arabic RTL, Workers assets, Pages output.');
+
+const productCards=[...html.matchAll(/<a class="rank-card"([^>]+)>/g)].map(([,attrs])=>Object.fromEntries([...attrs.matchAll(/([\w-]+)="([^"]*)"/g)].map(([,name,value])=>[name,value])));
+const expectedProducts=[['dawn',15000],['sunflare',35000],['meadow',65000],['horizon',120000],['aurora',150000],['zenith',300000]];
+assert.equal(productCards.length,expectedProducts.length,'Six supplied rank cards must be visible');
+productCards.forEach((card,index)=>{
+ const [rank,amount]=expectedProducts[index];assert.equal(card['data-store-rank'],rank,'Ranks must appear cheapest first');assert.equal(Number(card['data-price']),amount,'Rank price must match source card');
+ const url=new URL(card.href);assert.equal(url.origin,'https://wa.me');assert.equal(url.pathname,'/6285703163488','Order must use the supplied WhatsApp number');
+ const message=url.searchParams.get('text');const rankName=rank.charAt(0).toUpperCase()+rank.slice(1);
+ assert(message.includes(rankName)&&message.includes('ARUNIKA')&&message.includes('Rp'+amount.toLocaleString('id-ID')),'Each order must identify its rank and price');assert(message.includes('Nickname Minecraft:'));
+ assert.equal(card.target,'_blank');assert(card.rel.includes('noopener'));assert(card.rel.includes('noreferrer'));
+});
+
+console.log('Passed: syntax, assets, routes, ARUNIKA branding, 10 languages, persistence, fallback, Arabic RTL, Workers assets, Pages output, rank order/prices/WhatsApp links.');

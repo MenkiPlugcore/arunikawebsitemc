@@ -73,7 +73,7 @@ window.ARUNIKA_CONFIG = {
 };
 ```
 
-Alamat, data statistik, dan map masih kosong. Website menampilkan **belum terhubung** sampai sumber data asli dipasang. Store masih rancangan kategori, tanpa produk/harga atau transaksi aktif. Logo navbar tersedia di `dist/assets/arunika-hero.png`; ilustrasi ARUNIKA dengan pulau Minecraft pada hero tersedia di `dist/assets/arunika-world-hero.png`. Nama pemain dan alamat server tidak diterjemahkan. Bahasa peta eksternal mengikuti layanan peta tersebut.
+Alamat, data statistik, dan map masih kosong. Website menampilkan **belum terhubung** sampai sumber data asli dipasang. Store menampilkan 6 rank dari kartu yang diberikan pengelola, diurutkan dari termurah: Dawn Rp15.000, Sunflare Rp35.000, Meadow Rp65.000, Horizon Rp120.000, Aurora Rp150.000, Zenith Rp300.000. Klik gambar atau kartu membuka WhatsApp admin 6285703163488 dengan nama rank, harga, dan kolom nickname; tidak mengirim pesan otomatis atau memproses pembayaran di website. Cosmetics dan bundles masih berupa rancangan. Logo navbar tersedia di `dist/assets/arunika-hero.png`; ilustrasi ARUNIKA dengan pulau Minecraft pada hero tersedia di `dist/assets/arunika-world-hero.png`. Nama pemain dan alamat server tidak diterjemahkan. Bahasa peta eksternal mengikuti layanan peta tersebut.
 
 ### Status server
 
@@ -120,3 +120,7 @@ npm run check
 ```
 
 Pemeriksaan mencakup sintaks JavaScript, referensi asset lokal, navigasi, kelengkapan 10 kamus, rebranding ARUNIKA, penyimpanan bahasa, dan Arabic RTL. Build opsional `npm run build` menjalankan pemeriksaan; file produksi sudah tersedia di `dist`. Pemeriksaan tampilan visual melalui browser belum dilakukan pada proses migrasi.
+
+## Kartu rank dan pesanan WhatsApp
+
+Kartu berada di `dist/assets/ranks/` sebagai WebP lossless dengan ukuran dan tampilan asli tetap terjaga. Nama, harga, dan benefit mengikuti ZIP sumber pengelola. Nomor WhatsApp serta pesan disimpan pada tautan kartu di bagian store pada `dist/index.html`. Perubahan teks bahasa website tidak menerjemahkan teks dalam gambar sumber; teks gambar dan pesan WhatsApp tetap memakai Bahasa Indonesia.
