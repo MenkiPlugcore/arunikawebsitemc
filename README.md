@@ -127,8 +127,8 @@ Gambar rank berada di `dist/assets/ranks/` sebagai WebP lossless dengan ukuran d
 
 ## Halaman About
 
-Menampilkan cosmetic unik, furniture custom, mount/pet yang bisa ditunggangi, dan 13 fitur dari pengelola: Player Shop, Auction, Auto Capicator (Shift untuk satu batang), Auto Stack Item Drop + Mob, Rank Berbayar Ingame, Modeling, Gacha, Vote, Quests, Storyline ARUNIKA, 5 SL, AURA SKILL, dan Custom Enchant (Advanced Enchantments). Istilah SL dipertahankan tanpa perluasan karena pengelola belum memberi kepanjangannya.
+Menampilkan cosmetic unik, furniture custom, mount/pet yang bisa ditunggangi, dan 13 fitur dari pengelola: Player Shop, Auction, Auto Capicator (Shift untuk satu batang), Auto Stack Item Drop + Mob, Rank Berbayar Ingame, Modeling, Gacha, Vote, Quests, Storyline ARUNIKA, 5 Senjata Legend, AURA SKILL, dan Custom Enchant (Advanced Enchantments).
 
 ## Ilustrasi kartu fitur
 
-Ketiga belas kartu fitur memakai gambar kiriman pengelola. Batch pertama meliputi Player Shop, Auction, Auto Capicator, Auto Stack Item Drop + Mob, Rank Berbayar Ingame, Modeling, Gacha, Vote, Quests, dan Storyline ARUNIKA (1672 × 941). Batch kedua melengkapi 5 SL, AURA SKILL, dan Custom Enchant (1920 × 1080). File web tersedia di `dist/assets/features/` dalam WebP kualitas tinggi, dengan ukuran asli dan komposisi penuh dipertahankan. Gambar memakai lazy loading. Judul/deskripsi HTML tetap diterjemahkan ke 10 bahasa; tulisan dalam gambar mengikuti sumber Bahasa Indonesia.
+Ketiga belas kartu fitur memakai gambar kiriman pengelola. Batch pertama meliputi Player Shop, Auction, Auto Capicator, Auto Stack Item Drop + Mob, Rank Berbayar Ingame, Modeling, Gacha, Vote, Quests, dan Storyline ARUNIKA (1672 × 941). Batch kedua melengkapi AURA SKILL dan Custom Enchant (1920 × 1080). Fitur 5 Senjata Legend menggunakan ilustrasi terbaru pengelola (1536 × 864). File web tersedia di `dist/assets/features/` dalam WebP kualitas tinggi, dengan ukuran asli dan komposisi penuh dipertahankan. Gambar memakai lazy loading. Judul/deskripsi HTML tetap diterjemahkan ke 10 bahasa; tulisan dalam gambar mengikuti sumber Bahasa Indonesia.
