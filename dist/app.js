@@ -29,7 +29,6 @@ document.querySelectorAll('[data-join]').forEach(b=>b.onclick=()=>{
   row.append(box,copy);content.append(row);
  }
 });
-document.querySelectorAll('[data-product]').forEach(b=>b.onclick=()=>modal(b.dataset.product,'Kategori ini masih berupa rancangan. Produk, benefit, harga, dan pembayaran belum dikonfigurasi. Belum ada transaksi yang tersedia.'));
 $('#map-info').onclick=()=>modal('Hubungkan live map.','Pengelola dapat memasang URL HTTPS layanan map pada konfigurasi website. Peta perlu mengizinkan tampil di dalam halaman ini. Penanda pemain mengikuti data dan pengaturan privasi dari layanan map tersebut.');
 function https(value){try{let u=new URL(value);return u.protocol==='https:'?u.href:null}catch{return null}}
 if(cfg.mapUrl&&https(cfg.mapUrl)){
