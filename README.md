@@ -121,9 +121,9 @@ npm run check
 
 Pemeriksaan mencakup sintaks JavaScript, referensi asset lokal, navigasi, kelengkapan 10 kamus, rebranding ARUNIKA, penyimpanan bahasa, dan Arabic RTL. Build opsional `npm run build` menjalankan pemeriksaan; file produksi sudah tersedia di `dist`. Pemeriksaan tampilan visual melalui browser belum dilakukan pada proses migrasi.
 
-## Kartu rank dan pesanan WhatsApp
+## Gambar rank dan pesanan WhatsApp
 
-Kartu berada di `dist/assets/ranks/` sebagai WebP lossless dengan ukuran dan tampilan asli tetap terjaga. Nama, harga, dan benefit mengikuti ZIP sumber pengelola. Nomor WhatsApp serta pesan disimpan pada tautan kartu di bagian store pada `dist/index.html`. Perubahan teks bahasa website tidak menerjemahkan teks dalam gambar sumber; teks gambar dan pesan WhatsApp tetap memakai Bahasa Indonesia.
+Gambar rank berada di `dist/assets/ranks/` sebagai WebP lossless dengan ukuran dan tampilan asli tetap terjaga. Store menyajikan gambar rank langsung sebagai tautan WhatsApp. Nama, harga, benefit, dan ajakan memesan tetap tersedia bagi pembaca layar melalui teks `sr-only`; informasi produk mengikuti ZIP sumber pengelola. Nomor WhatsApp serta pesan disimpan pada tautan gambar di bagian store pada `dist/index.html`. Efek CSS berupa kemunculan bertahap, gerak hover pada perangkat dengan pointer, dan respons tekan memakai transform/opacity tanpa animasi berulang; efek dinonaktifkan saat `prefers-reduced-motion: reduce`. Perubahan teks bahasa website tidak menerjemahkan teks dalam gambar sumber; teks gambar dan pesan WhatsApp tetap memakai Bahasa Indonesia.
 
 ## Halaman About
 
