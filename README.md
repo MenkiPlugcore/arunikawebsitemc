@@ -73,7 +73,7 @@ window.ARUNIKA_CONFIG = {
 };
 ```
 
-Alamat, data statistik, dan map masih kosong. Website menampilkan **belum terhubung** sampai sumber data asli dipasang. Store masih rancangan kategori, tanpa produk/harga atau transaksi aktif. Logo dari pengelola tersedia di `dist/assets/arunika-hero.png`. Nama pemain dan alamat server tidak diterjemahkan. Bahasa peta eksternal mengikuti layanan peta tersebut.
+Alamat, data statistik, dan map masih kosong. Website menampilkan **belum terhubung** sampai sumber data asli dipasang. Store masih rancangan kategori, tanpa produk/harga atau transaksi aktif. Logo navbar tersedia di `dist/assets/arunika-hero.png`; ilustrasi ARUNIKA dengan pulau Minecraft pada hero tersedia di `dist/assets/arunika-world-hero.png`. Nama pemain dan alamat server tidak diterjemahkan. Bahasa peta eksternal mengikuti layanan peta tersebut.
 
 ### Status server
 
