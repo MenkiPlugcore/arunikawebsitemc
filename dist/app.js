@@ -61,7 +61,7 @@ function renderStatus(){
  text('#server-state',d.online?'Server online':'Server offline');$('.status-orb').className='status-orb '+(d.online?'live':'offline');
  $('#online').textContent=d.online&&Number.isFinite(d.playersOnline)&&Number.isFinite(d.playersMax)?`${new Intl.NumberFormat(arunikaLocale()).format(d.playersOnline)} / ${new Intl.NumberFormat(arunikaLocale()).format(d.playersMax)}`:'—';
  const reportedVersion=d.online&&typeof d.version==='string'&&d.version.trim()?d.version:null;
- const configuredVersion=d.online&&typeof cfg.javaVersion==='string'&&/^\\d+\\.\\d+(?:\\.\\d+)?$/.test(cfg.javaVersion.trim())?cfg.javaVersion.trim():null;
+ const configuredVersion=d.online&&typeof cfg.javaVersion==='string'&&/^\d+\.\d+(?:\.\d+)?$/.test(cfg.javaVersion.trim())?cfg.javaVersion.trim():null;
  $('#version').textContent=reportedVersion||configuredVersion||'—';
  $('#version').title=reportedVersion?'Versi yang dilaporkan langsung oleh Minecraft.':configuredVersion?'Versi dari konfigurasi website; server sedang tidak mengirim nomor versi yang valid.':'Versi server belum tersedia.';
  $('#latency').textContent=d.online&&Number.isFinite(d.latencyMs)?`${new Intl.NumberFormat(arunikaLocale()).format(d.latencyMs)} ms`:'—';
