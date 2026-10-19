@@ -77,6 +77,8 @@ Alamat, data statistik, dan map masih kosong. Website menampilkan **belum terhub
 
 ### Status server
 
+Status server Java ARUNIKA sekarang memakai `https://api.mcstatus.io/v2/status/java/arunikamc.cadera.site` di `dist/config.js`. Website menyesuaikan respons API (status online, jumlah pemain, versi, dan waktu pengecekan) ke format internal. Hasilnya dapat tertunda karena cache API; latensi dalam game tetap ditampilkan sebagai `—` karena API tersebut tidak menyediakan metrik ping pemain/server yang sebanding. Pemantauan ini tidak mengubah IP, port, atau konfigurasi Geyser/Floodgate.
+
 `statusEndpoint` harus berupa URL HTTPS yang mengizinkan CORS dari domain website, dan menghasilkan JSON:
 
 ```json
