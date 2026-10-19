@@ -10,11 +10,17 @@ const html=fs.readFileSync(path.join(dist,'index.html'),'utf8');
 const ids=[...html.matchAll(/\bid="([^"]+)"/g)].map(x=>x[1]);assert.equal(new Set(ids).size,ids.length,'Duplicate HTML IDs');
 for(const [,hash] of html.matchAll(/href="#([^"]+)"/g))assert(ids.includes(hash),`Unknown section ${hash}`);
 for(const [,ref] of html.matchAll(/(?:src|href)="([^"#]+)"/g))if(!/^https?:/.test(ref))assert(fs.existsSync(path.join(dist,ref)),`Missing asset ${ref}`);
-// The Minecraft connection hostname retains cadera.site; it is a domain, not visible legacy branding.
+// Keep allowed Minecraft/Live Map hostnames and the official channel name while rejecting legacy branding.
+const withoutAllowedNames=source=>source
+ .replace(/\b(?:arunikamc|map)\.cadera\.site\b/gi,'')
+ .replace(/Official CADERA Channel/g,'');
+assert(!/cadera/i.test(withoutAllowedNames('arunikamc.cadera.site https://map.cadera.site')),'Allowed server hostnames must pass branding check');
+assert(!/cadera/i.test(withoutAllowedNames('Official CADERA Channel')),'Official channel name must pass branding check');
+assert(/cadera/i.test(withoutAllowedNames('CADERA Universe')),'Old branding must still fail');
+assert(/cadera/i.test(withoutAllowedNames('random.cadera.site')),'Unknown CADERA domains must still fail');
 for(const name of fs.readdirSync(dist))if(/\.(html|css|js)$/.test(name)){
  const content=fs.readFileSync(path.join(dist,name),'utf8');
- const withoutAllowedNames=content.replace(/\barunikamc\.cadera\.site\b/gi,'').replace(/Official CADERA Channel/g,'');
- assert(!/cadera/i.test(withoutAllowedNames),`Old branding in ${name}`);
+ assert(!/cadera/i.test(withoutAllowedNames(content)),`Old branding in ${name}`);
 }
 const communityLinks=[...html.matchAll(/<a class="official-link" href="([^"]+)" target="_blank" rel="noopener noreferrer">/g)].map(match=>match[1]);
 assert.deepEqual(communityLinks,[
