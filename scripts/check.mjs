@@ -13,9 +13,17 @@ for(const [,ref] of html.matchAll(/(?:src|href)="([^"#]+)"/g))if(!/^https?:/.tes
 // The Minecraft connection hostname retains cadera.site; it is a domain, not visible legacy branding.
 for(const name of fs.readdirSync(dist))if(/\.(html|css|js)$/.test(name)){
  const content=fs.readFileSync(path.join(dist,name),'utf8');
- const withoutConnectionHostname=content.replace(/\barunikamc\.cadera\.site\b/gi,'');
- assert(!/cadera/i.test(withoutConnectionHostname),`Old branding in ${name}`);
+ const withoutAllowedNames=content.replace(/\barunikamc\.cadera\.site\b/gi,'').replace(/Official CADERA Channel/g,'');
+ assert(!/cadera/i.test(withoutAllowedNames),`Old branding in ${name}`);
 }
+const communityLinks=[...html.matchAll(/<a class="official-link" href="([^"]+)" target="_blank" rel="noopener noreferrer">/g)].map(match=>match[1]);
+assert.deepEqual(communityLinks,[
+ 'https://minecraft-mp.com/server/365453/vote/',
+ 'https://chat.whatsapp.com/E0xGeLkG7II7Cu5oEFJDS2',
+ 'https://whatsapp.com/channel/0029Vb8hifgHQbSCTgq87D30',
+ 'https://discord.gg/yREhqvcRNT'
+],'All four official community links must be correct and safe');
+assert(html.includes('id="official-links-heading"'),'Official links must be presented as a labelled section');
 const window={};vm.runInNewContext(fs.readFileSync(path.join(dist,'translations.js'),'utf8'),{window});
 const data=window.ARUNIKA_TRANSLATIONS,codes=['id','en','ja','es','ar','th','vi','ms','ko','zh-TW'];
 assert.deepEqual(Object.keys(data),codes);const keys=Object.keys(data.id);
@@ -51,4 +59,4 @@ productCards.forEach((card,index)=>{
 });
 
 execFileSync(process.execPath,[path.join(root,'scripts/check-feature-slider.mjs')],{stdio:'inherit'});
-console.log('Passed: syntax, assets, routes, ARUNIKA branding, 10 languages, persistence, fallback, Arabic RTL, Workers assets, Pages output, rank order/prices/WhatsApp links.');
+console.log('Passed: syntax, assets, routes, ARUNIKA branding, 10 languages, persistence, fallback, Arabic RTL, Workers assets, Pages output, community links, rank order/prices/WhatsApp links.');

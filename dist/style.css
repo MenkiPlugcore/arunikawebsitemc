@@ -57,3 +57,20 @@
 @media(max-width:850px){.feature-stage>.about-feature.has-image{grid-template-columns:1fr}.feature-slider .feature-copy{padding:22px 25px}.feature-slider .has-image h3{font-size:25px}.feature-slider .about-feature p{margin-top:10px}.feature-slider .feature-top{margin-bottom:10px}}
 @media(max-width:550px){.feature-slider .feature-copy{padding:20px}.feature-slider .has-image h3{font-size:23px}.feature-slider .about-feature p{font-size:13px}.feature-controls{gap:8px;margin-top:14px}.feature-arrow{inline-size:42px;block-size:42px}.feature-dot{width:24px;height:30px}.feature-slider-hint{font-size:10px;line-height:1.6}}
 @media(prefers-reduced-motion:reduce){.feature-slider.is-ready .about-feature:not([hidden]){animation:none}.feature-arrow,.feature-dot>span{transition:none}.feature-arrow:active{transform:none}}
+
+/* Community links: four destination cards on the ARUNIKA home page. */
+.official-links{margin:58px 0 46px}
+.official-links-heading{display:flex;align-items:end;justify-content:space-between;gap:25px;margin-bottom:23px}
+.official-links-heading h2{margin-top:12px}
+.official-links-heading>p{font-size:12px;max-width:365px;margin:0}
+.official-links-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}
+.official-link{display:flex;flex-direction:column;min-width:0;padding:22px 20px 19px;border:1px solid var(--line);border-radius:10px;background:var(--panel);transition:border-color .2s,transform .2s,box-shadow .2s}
+.official-link-icon{display:grid;place-items:center;width:45px;height:45px;margin-bottom:17px;border-radius:11px;background:#e7efe8;font-size:23px;line-height:1}
+.official-link-kicker{font-size:9px;font-weight:700;letter-spacing:1px;color:var(--green)}
+.official-link h3{font-size:18px;line-height:1.3;letter-spacing:-.3px;margin-top:10px;overflow-wrap:anywhere}
+.official-link p{font-size:12px;line-height:1.65;margin:9px 0 auto}
+.official-link-cta{display:block;font-size:11px;font-weight:700;color:var(--green);border-top:1px solid var(--line);padding-top:14px;margin-top:22px}
+@media(hover:hover) and (pointer:fine){.official-link:hover{border-color:#c69b3c;box-shadow:0 9px 24px rgba(23,63,44,.07);transform:translateY(-3px)}}
+@media(max-width:1050px){.official-links-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:600px){.official-links-heading{align-items:flex-start;flex-direction:column;gap:8px}.official-links-grid{grid-template-columns:1fr;gap:12px}.official-link{padding:19px}.official-link-icon{margin-bottom:12px}.official-link-cta{margin-top:16px}}
+@media(prefers-reduced-motion:reduce){.official-link{transition:none}.official-link:hover{transform:none}}
