@@ -1,5 +1,7 @@
 name = "arunikawebsitemc"
 compatibility_date = "2026-10-13"
+main = "./src/worker.mjs"
 
 [assets]
 directory = "./dist"
+binding = "ASSETS"

@@ -96,6 +96,14 @@ Kolom **LATENSI MONITOR** menampilkan waktu respons permintaan HTTPS dari browse
 
 Contoh di atas hanya dokumentasi, bukan data yang ditampilkan. Backend/plugin monitoring harus memasok data asli dengan waktu terkini. Website meminta pembaruan setiap 30 detik dan menolak data yang berusia lebih dari 120 detik. `latencyMs` adalah hasil pengukuran monitor, bukan ping dalam game masing-masing pengunjung. Gangguan koneksi ditampilkan sebagai status tidak tersedia.
 
+### Live Leaderboard (Minecraft 1.21.11)
+
+Leaderboard web memakai `/api/leaderboard` (same-origin Cloudflare Worker). Worker membaca `https://map.cadera.site/leaderboard.json`, memvalidasi waktu pembaruan dan data, lalu mengirim JSON dari origin website sendiri sehingga tidak membutuhkan CORS pada squaremap.
+
+**Data tidak muncul sampai exporter di server Minecraft terpasang.** Jalankan plugin **CdrLeaderboardExport** (lihat paket dan panduan terpisah), yang menulis `plugins/squaremap/web/leaderboard.json` setiap 60 detik. Plugin membaca statistik Minecraft untuk waktu bermain dan player kills serta saldo dari penyedia ekonomi yang terhubung melalui Vault. Plugin tidak membuat data palsu: jika Vault / ekonomi belum tersedia, leaderboard saldo kosong. Pemain Java dan Bedrock disertakan ketika profil offline mereka ditemukan oleh Bukkit/Paper.
+
+Setelah memasang plugin, tes URL `https://map.cadera.site/leaderboard.json`. Jika tampil JSON dengan `updatedAt` terkini, tes `https://<domain-website>/api/leaderboard`. Jika rute Worker belum tersedia, pastikan build Cloudflare menggunakan `wrangler.toml` (Workers Static Assets, bukan Pages), mengandung `main = "./src/worker.mjs"` dan `binding = "ASSETS"`. Tidak diperlukan database, port, atau token baru.
+
 ### Leaderboard
 
 `leaderboardEndpoint` harus mendukung HTTPS/CORS dan menghasilkan JSON:

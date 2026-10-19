@@ -35,7 +35,7 @@ if(cfg.mapUrl&&https(cfg.mapUrl)){
  const shell=$('#map-shell');let frame=document.createElement('iframe');frame.title='ARUNIKA';frame.src=https(cfg.mapUrl);frame.referrerPolicy='no-referrer';frame.loading='lazy';frame.setAttribute('sandbox','allow-scripts allow-same-origin allow-popups');shell.replaceChildren(frame);
  let note=element('a','Buka peta di tab baru ↗');note.id='map-external';note.href=frame.src;note.target='_blank';note.rel='noopener noreferrer';note.className='button outline';shell.after(note);
 }
-async function getJSON(url){if(!https(url))throw Error('HTTPS required');let r=await fetch(url,{signal:AbortSignal.timeout(10000),cache:'no-store',credentials:'omit'});if(!r.ok)throw Error('Unavailable');return r.json()}
+async function getJSON(url){let endpoint;try{endpoint=new URL(url,location.origin);if(endpoint.protocol!=='https:')throw Error('HTTPS required')}catch{throw Error('Invalid HTTPS endpoint')}let r=await fetch(endpoint.href,{signal:AbortSignal.timeout(10000),cache:'no-store',credentials:'omit'});if(!r.ok)throw Error('Unavailable');return r.json()}
 function normalizeServerStatus(d){
  // mcstatus.io returns nested player/version data but does not expose Minecraft TCP ping latency.
  if(!d||typeof d!=='object')throw Error('Invalid status data');

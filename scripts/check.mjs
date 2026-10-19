@@ -6,6 +6,7 @@ import {execFileSync} from 'node:child_process';
 const root=new URL('../',import.meta.url).pathname;
 const dist=path.join(root,'dist');
 for(const name of ['app.js','config.js','i18n.js','translations.js','feature-slider.js'])execFileSync(process.execPath,['--check',path.join(dist,name)]);
+execFileSync(process.execPath,['--check',path.join(root,'src/worker.mjs')]);
 const html=fs.readFileSync(path.join(dist,'index.html'),'utf8');
 const ids=[...html.matchAll(/\bid="([^"]+)"/g)].map(x=>x[1]);assert.equal(new Set(ids).size,ids.length,'Duplicate HTML IDs');
 for(const [,hash] of html.matchAll(/href="#([^"]+)"/g))assert(ids.includes(hash),`Unknown section ${hash}`);
@@ -51,6 +52,10 @@ assert(fs.existsSync(path.join(dist,'assets/arunika-hero.png')));
 const workerConfig=fs.readFileSync(path.join(root,'wrangler.toml'),'utf8');
 assert(!workerConfig.includes('pages_build_output_dir'),'Workers config must not use the Pages output key');
 assert.match(workerConfig,/\[assets\][\s\S]*directory\s*=\s*"\.\/dist"/,'Workers must serve dist as static assets');
+assert.match(workerConfig,/main\s*=\s*"\.\/src\/worker\.mjs"/,'Workers entrypoint must bridge leaderboard requests');
+assert.match(workerConfig,/binding\s*=\s*"ASSETS"/,'Workers assets binding is required');
+const siteConfig=fs.readFileSync(path.join(dist,'config.js'),'utf8');
+assert(siteConfig.includes("leaderboardEndpoint: '/api/leaderboard'"),'Leaderboard must use same-origin API');
 assert.equal(fs.readFileSync(path.join(root,'wrangler.pages.toml'),'utf8').match(/pages_build_output_dir\s*=\s*"([^"]+)"/)[1],'./dist');
 
 const productCards=[...html.matchAll(/<a class="rank-card"([^>]+)>/g)].map(([,attrs])=>Object.fromEntries([...attrs.matchAll(/([\w-]+)="([^"]*)"/g)].map(([,name,value])=>[name,value])));
