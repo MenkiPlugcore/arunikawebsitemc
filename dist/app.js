@@ -46,7 +46,7 @@ function normalizeServerStatus(d){
   updatedAt:new Date(d.retrieved_at).toISOString(),
   playersOnline:online&&Number.isFinite(d.players?.online)?d.players.online:null,
   playersMax:online&&Number.isFinite(d.players?.max)?d.players.max:null,
-  version:online&&typeof d.version?.name_clean==='string'?d.version.name_clean:null,
+  version:online&&typeof d.version?.name_clean==='string'&&/\b\d+\.\d+(?:\.\d+)?\b/.test(d.version.name_clean)?d.version.name_clean:null,
   latencyMs:null // The public API does not provide an in-game latency metric.
  };
 }
