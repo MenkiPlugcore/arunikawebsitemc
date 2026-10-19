@@ -37,7 +37,7 @@ if(cfg.mapUrl&&https(cfg.mapUrl)){
 }
 async function getJSON(url){if(!https(url))throw Error('HTTPS required');let r=await fetch(url,{signal:AbortSignal.timeout(10000),cache:'no-store',credentials:'omit'});if(!r.ok)throw Error('Unavailable');return r.json()}
 function normalizeServerStatus(d){
- // mcstatus.io reports Minecraft ping results using a nested player/version schema.
+ // mcstatus.io returns nested player/version data but does not expose Minecraft TCP ping latency.
  if(!d||typeof d!=='object')throw Error('Invalid status data');
  if(!Number.isFinite(d.retrieved_at))return d; // Keep compatibility with our original backend JSON format.
  const online=d.online===true;
@@ -60,15 +60,24 @@ function renderStatus(){
  let d=statusData;
  text('#server-state',d.online?'Server online':'Server offline');$('.status-orb').className='status-orb '+(d.online?'live':'offline');
  $('#online').textContent=d.online&&Number.isFinite(d.playersOnline)&&Number.isFinite(d.playersMax)?`${new Intl.NumberFormat(arunikaLocale()).format(d.playersOnline)} / ${new Intl.NumberFormat(arunikaLocale()).format(d.playersMax)}`:'—';
- $('#version').textContent=typeof d.version==='string'?d.version:'—';
+ const reportedVersion=d.online&&typeof d.version==='string'&&d.version.trim()?d.version:null;
+ const configuredVersion=d.online&&typeof cfg.javaVersion==='string'&&/^\\d+\\.\\d+(?:\\.\\d+)?$/.test(cfg.javaVersion.trim())?cfg.javaVersion.trim():null;
+ $('#version').textContent=reportedVersion||configuredVersion||'—';
+ $('#version').title=reportedVersion?'Versi yang dilaporkan langsung oleh Minecraft.':configuredVersion?'Versi dari konfigurasi website; server sedang tidak mengirim nomor versi yang valid.':'Versi server belum tersedia.';
  $('#latency').textContent=d.online&&Number.isFinite(d.latencyMs)?`${new Intl.NumberFormat(arunikaLocale()).format(d.latencyMs)} ms`:'—';
+ $('#latency').title=d.latencySource==='api'?'Waktu respons HTTPS dari browser ke API monitoring, bukan ping Minecraft atau latensi pemain.':'Latensi yang dikirim layanan monitoring; bukan ping setiap pemain.';
  $('#status-sub').textContent=t('Diperiksa')+' '+new Date(d.updatedAt).toLocaleTimeString(arunikaLocale());
 }
 async function updateStatus(){
  if(!cfg.statusEndpoint){toast('Alamat monitor server belum dikonfigurasi.');return}
  $('#refresh').disabled=true;statusMode='loading';renderStatus();
  try{
+  const requestStart=performance.now();
   let d=normalizeServerStatus(await getJSON(cfg.statusEndpoint));
+  if(!Number.isFinite(d.latencyMs)){
+   d.latencyMs=Math.max(0,Math.round(performance.now()-requestStart));
+   d.latencySource='api';
+  }
   if(typeof d.online!=='boolean'||!d.updatedAt||!Number.isFinite(Date.parse(d.updatedAt))||Math.abs(Date.now()-Date.parse(d.updatedAt))>120000)throw Error('Stale data');
   statusData=d;statusMode='ready';
  }catch{statusData=null;statusMode='failed'}finally{$('#refresh').disabled=false;renderStatus()}
