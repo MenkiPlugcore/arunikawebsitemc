@@ -77,7 +77,9 @@ Alamat, data statistik, dan map masih kosong. Website menampilkan **belum terhub
 
 ### Status server
 
-Status server Java ARUNIKA sekarang memakai `https://api.mcstatus.io/v2/status/java/arunikamc.cadera.site` di `dist/config.js`. Website menyesuaikan respons API (status online, jumlah pemain, versi, dan waktu pengecekan) ke format internal. Hasilnya dapat tertunda karena cache API; latensi dalam game tetap ditampilkan sebagai `—` karena API tersebut tidak menyediakan metrik ping pemain/server yang sebanding. Pemantauan ini tidak mengubah IP, port, atau konfigurasi Geyser/Floodgate.
+Status server Java ARUNIKA memakai `https://api.mcstatus.io/v2/status/java/arunikamc.cadera.site` di `dist/config.js`. Website menyesuaikan respons API (status online, jumlah pemain, versi, dan waktu pengecekan) ke format internal. Server yang menggunakan maintenance MOTD bisa menyembunyikan versi numerik Minecraft, sehingga `javaVersion: '1.21.11'` menjadi fallback manual (hanya bila server terdeteksi online dan versi numerik dari API tidak tersedia). Jika versi Java berubah, perbarui `javaVersion` di `dist/config.js`.
+
+Kolom **LATENSI MONITOR** menampilkan waktu respons permintaan HTTPS dari browser pengunjung ke API status jika API tidak memberikan angka latensi. Angka ini *bukan* ping protokol Minecraft, bukan RTT antara server Minecraft dan pemain, dan dapat mencakup waktu query/cache API. Tooltip pada angka menjelaskan asal metrik. Untuk ping Minecraft asli, gunakan plugin/backend ping server khusus. Hasil status API dapat tertunda karena cache; integrasi ini tidak mengubah IP, port, atau Geyser/Floodgate.
 
 `statusEndpoint` harus berupa URL HTTPS yang mengizinkan CORS dari domain website, dan menghasilkan JSON:
 
