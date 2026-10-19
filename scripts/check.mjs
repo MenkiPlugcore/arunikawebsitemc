@@ -10,7 +10,12 @@ const html=fs.readFileSync(path.join(dist,'index.html'),'utf8');
 const ids=[...html.matchAll(/\bid="([^"]+)"/g)].map(x=>x[1]);assert.equal(new Set(ids).size,ids.length,'Duplicate HTML IDs');
 for(const [,hash] of html.matchAll(/href="#([^"]+)"/g))assert(ids.includes(hash),`Unknown section ${hash}`);
 for(const [,ref] of html.matchAll(/(?:src|href)="([^"#]+)"/g))if(!/^https?:/.test(ref))assert(fs.existsSync(path.join(dist,ref)),`Missing asset ${ref}`);
-for(const name of fs.readdirSync(dist))if(/\.(html|css|js)$/.test(name))assert(!/cadera/i.test(fs.readFileSync(path.join(dist,name),'utf8')),`Old branding in ${name}`);
+// The Minecraft connection hostname retains cadera.site; it is a domain, not visible legacy branding.
+for(const name of fs.readdirSync(dist))if(/\.(html|css|js)$/.test(name)){
+ const content=fs.readFileSync(path.join(dist,name),'utf8');
+ const withoutConnectionHostname=content.replace(/\barunikamc\.cadera\.site\b/gi,'');
+ assert(!/cadera/i.test(withoutConnectionHostname),`Old branding in ${name}`);
+}
 const window={};vm.runInNewContext(fs.readFileSync(path.join(dist,'translations.js'),'utf8'),{window});
 const data=window.ARUNIKA_TRANSLATIONS,codes=['id','en','ja','es','ar','th','vi','ms','ko','zh-TW'];
 assert.deepEqual(Object.keys(data),codes);const keys=Object.keys(data.id);
