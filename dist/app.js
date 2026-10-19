@@ -36,6 +36,20 @@ if(cfg.mapUrl&&https(cfg.mapUrl)){
  let note=element('a','Buka peta di tab baru ↗');note.id='map-external';note.href=frame.src;note.target='_blank';note.rel='noopener noreferrer';note.className='button outline';shell.after(note);
 }
 async function getJSON(url){if(!https(url))throw Error('HTTPS required');let r=await fetch(url,{signal:AbortSignal.timeout(10000),cache:'no-store',credentials:'omit'});if(!r.ok)throw Error('Unavailable');return r.json()}
+function normalizeServerStatus(d){
+ // mcstatus.io reports Minecraft ping results using a nested player/version schema.
+ if(!d||typeof d!=='object')throw Error('Invalid status data');
+ if(!Number.isFinite(d.retrieved_at))return d; // Keep compatibility with our original backend JSON format.
+ const online=d.online===true;
+ return {
+  online:d.online,
+  updatedAt:new Date(d.retrieved_at).toISOString(),
+  playersOnline:online&&Number.isFinite(d.players?.online)?d.players.online:null,
+  playersMax:online&&Number.isFinite(d.players?.max)?d.players.max:null,
+  version:online&&typeof d.version?.name_clean==='string'?d.version.name_clean:null,
+  latencyMs:null // The public API does not provide an in-game latency metric.
+ };
+}
 function renderStatus(){
  text('#refresh','Perbarui ↻');
  if(statusMode==='idle'){text('#server-state','Belum terhubung');text('#status-sub','Menunggu alamat server');return}
@@ -54,7 +68,7 @@ async function updateStatus(){
  if(!cfg.statusEndpoint){toast('Alamat monitor server belum dikonfigurasi.');return}
  $('#refresh').disabled=true;statusMode='loading';renderStatus();
  try{
-  let d=await getJSON(cfg.statusEndpoint);
+  let d=normalizeServerStatus(await getJSON(cfg.statusEndpoint));
   if(typeof d.online!=='boolean'||!d.updatedAt||!Number.isFinite(Date.parse(d.updatedAt))||Math.abs(Date.now()-Date.parse(d.updatedAt))>120000)throw Error('Stale data');
   statusData=d;statusMode='ready';
  }catch{statusData=null;statusMode='failed'}finally{$('#refresh').disabled=false;renderStatus()}
