@@ -69,5 +69,6 @@ productCards.forEach((card,index)=>{
  assert.equal(card.target,'_blank');assert(card.rel.includes('noopener'));assert(card.rel.includes('noreferrer'));
 });
 
+execFileSync(process.execPath,[path.join(root,'scripts/check-leaderboard.mjs')],{stdio:'inherit'});
 execFileSync(process.execPath,[path.join(root,'scripts/check-feature-slider.mjs')],{stdio:'inherit'});
 console.log('Passed: syntax, assets, routes, ARUNIKA branding, 10 languages, persistence, fallback, Arabic RTL, Workers assets, Pages output, community links, rank order/prices/WhatsApp links.');
