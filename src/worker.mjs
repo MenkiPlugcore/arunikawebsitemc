@@ -1,3 +1,5 @@
+import {topVotersResponse} from './top-voters.mjs';
+
 // Same-origin bridge between ARUNIKA website and squaremap's public JSON export.
 // No credentials, player IPs, tokens, or private world data are exposed.
 const UPSTREAM = 'https://map.cadera.site/leaderboard.json';
@@ -37,8 +39,9 @@ export function normalizeLeaderboard(raw) {
 }
 
 export default {
-  async fetch(request, env) {
+  async fetch(request, env, ctx) {
     const {pathname} = new URL(request.url);
+    if (pathname === '/api/top-voters') return topVotersResponse(request, ctx);
     if (pathname !== '/api/leaderboard') return env.ASSETS.fetch(request);
     if (request.method !== 'GET') return jsonResponse({error:'Method not allowed'}, 405);
     try {

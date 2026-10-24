@@ -74,3 +74,28 @@
 @media(max-width:1050px){.official-links-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:600px){.official-links-heading{align-items:flex-start;flex-direction:column;gap:8px}.official-links-grid{grid-template-columns:1fr;gap:12px}.official-link{padding:19px}.official-link-icon{margin-bottom:12px}.official-link-cta{margin-top:16px}}
 @media(prefers-reduced-motion:reduce){.official-link{transition:none}.official-link:hover{transform:none}}
+
+/* Monthly community voting, sourced from ARUNIKA's public Minecraft-MP listing. */
+.home-voters{margin:38px 0 48px;padding:28px 30px 22px;border:1px solid var(--line);border-radius:14px;background:linear-gradient(125deg,#fffef9,#edf4ee);min-width:0}
+.voters-heading{display:flex;align-items:center;justify-content:space-between;gap:24px;margin-bottom:23px}
+.voters-heading .eyebrow{font-size:10px;letter-spacing:1.7px;color:var(--green)}
+.voters-heading h2{margin:10px 0 8px;font-size:29px;line-height:1.25}
+.voters-heading p{margin:0;font-size:12px}.voters-heading .button{flex-shrink:0}
+.voters-table-wrap{min-width:0;overflow-x:auto;border:1px solid var(--line);border-radius:9px;background:var(--panel)}
+.voters-table{width:100%;border-collapse:collapse;table-layout:fixed}
+.voters-table th{padding:13px 18px;background:#e7efe8;color:var(--muted);font-size:10px;font-weight:600;text-align:start}
+.voters-table th:first-child{width:85px}.voters-table th:last-child{width:105px;text-align:end}
+.voters-table td{padding:13px 18px;border-top:1px solid #e4ece5;font-size:14px;vertical-align:middle}
+.voters-table tr[data-position="1"]{background:#fff9e8}
+.voter-position{display:inline-grid;place-items:center;inline-size:28px;block-size:28px;background:#edf3ee;color:var(--muted);border-radius:50%;font-weight:600;font-variant-numeric:tabular-nums}
+[data-position="1"] .voter-position{background:var(--gold);color:var(--text)}
+[data-position="2"] .voter-position{background:#e3e9ed;color:#425763}
+[data-position="3"] .voter-position{background:#f0e3d7;color:#7c593b}
+.voter-identity{display:flex;align-items:center;gap:12px;min-width:0}
+.voter-monogram{display:grid;place-items:center;inline-size:32px;block-size:32px;flex-shrink:0;border-radius:9px;background:#e4eee5;color:var(--green);font-size:11px;font-weight:700}
+.voter-name{min-width:0;overflow-wrap:anywhere;font-weight:500}.voters-table .voter-count{text-align:end;font-weight:700;font-variant-numeric:tabular-nums;color:var(--green)}
+.voters-table .voters-message{padding:40px 18px;text-align:center;color:var(--muted);font-size:13px}
+.voters-meta{display:flex;align-items:center;justify-content:space-between;gap:15px;margin-top:15px;min-height:20px}
+.voters-meta p,.voters-period-note{font-size:10px;color:var(--muted);margin:0;line-height:1.7}.voters-period-note{margin-top:3px}
+.voters-meta .text-button{font-size:11px;flex-shrink:0}
+@media(max-width:700px){.home-voters{padding:21px 16px 18px;margin-top:28px}.voters-heading{align-items:flex-start;flex-direction:column;gap:17px;margin-bottom:20px}.voters-heading h2{font-size:25px}.voters-heading .button{font-size:11px}.voters-table th{padding:12px 10px;font-size:9px}.voters-table th:first-child{width:65px}.voters-table th:last-child{width:78px}.voters-table td{padding:12px 10px;font-size:12px}.voter-identity{gap:8px}.voter-monogram{inline-size:26px;block-size:26px;font-size:9px}.voter-position{inline-size:25px;block-size:25px;font-size:11px}.voters-meta{align-items:flex-start}.voters-meta p,.voters-period-note{font-size:9px}}

@@ -104,6 +104,28 @@ Leaderboard web memakai `/api/leaderboard` (same-origin Cloudflare Worker). Work
 
 Setelah memasang plugin, tes URL `https://map.cadera.site/leaderboard.json`. Jika tampil JSON dengan `updatedAt` terkini, tes `https://<domain-website>/api/leaderboard`. Jika rute Worker belum tersedia, pastikan build Cloudflare menggunakan `wrangler.toml` (Workers Static Assets, bukan Pages), mengandung `main = "./src/worker.mjs"` dan `binding = "ASSETS"`. Tidak diperlukan database, port, atau token baru.
 
+### Top Voting di halaman utama
+
+Halaman Beranda menampilkan hingga 10 pemilih teratas bulan berjalan beserta jumlah vote,
+serta tombol menuju halaman vote resmi ARUNIKA (server ID `365453`). Sumbernya tabel
+publik **Top voters for this month** pada https://minecraft-mp.com/server/365453/vote/.
+
+`GET /api/top-voters` membaca halaman tersebut dari Worker, memvalidasi judul dan struktur tabel,
+lalu mengirim hanya nama dan jumlah vote. Tidak perlu API key, token, database, port tambahan,
+ataupun perubahan VotingPlugin. Widget ini tidak mengirim vote atau membagikan hadiah.
+Periode bulanan mengikuti Minecraft-MP, bukan kalender browser pengunjung.
+
+Respons berhasil disimpan di edge selama 180 detik. Browser memperbarui widget setiap tiga menit
+saat Beranda terlihat, dan tidak menyimpan cookie atau identitas pengunjung untuk fitur ini.
+`fetchedAt` adalah waktu data diambil dari sumber, bukan waktu vote terakhir.
+Jika sumber diblokir, strukturnya berubah, atau data kedaluwarsa, widget menampilkan status
+sementara tidak tersedia dan tautan vote tetap dapat digunakan; tidak ada peringkat contoh.
+Nama pemain ditampilkan sebagai teks dan tidak diterjemahkan. Judul/status mendukung 10 bahasa dan RTL.
+
+Pemeriksaan `npm run check` mencakup parser tabel, data kosong yang valid, batas ukuran,
+respons gagal/challenge, nama/angka tidak valid, cache, route GET saja, dan regresi leaderboard server.
+Jika nanti memakai API resmi Minecraft-MP, simpan API key sebagai Worker secret; jangan di `dist/config.js`.
+
 ### Leaderboard
 
 `leaderboardEndpoint` harus mendukung HTTPS/CORS dan menghasilkan JSON:

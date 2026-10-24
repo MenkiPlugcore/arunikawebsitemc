@@ -5,7 +5,7 @@ import assert from 'node:assert/strict';
 import {execFileSync} from 'node:child_process';
 const root=new URL('../',import.meta.url).pathname;
 const dist=path.join(root,'dist');
-for(const name of ['app.js','config.js','i18n.js','translations.js','feature-slider.js'])execFileSync(process.execPath,['--check',path.join(dist,name)]);
+for(const name of ['app.js','config.js','i18n.js','translations.js','feature-slider.js','top-voters.js','top-voters-translations.js'])execFileSync(process.execPath,['--check',path.join(dist,name)]);
 execFileSync(process.execPath,['--check',path.join(root,'src/worker.mjs')]);
 const html=fs.readFileSync(path.join(dist,'index.html'),'utf8');
 const ids=[...html.matchAll(/\bid="([^"]+)"/g)].map(x=>x[1]);assert.equal(new Set(ids).size,ids.length,'Duplicate HTML IDs');
@@ -32,6 +32,7 @@ assert.deepEqual(communityLinks,[
 ],'All four official community links must be correct and safe');
 assert(html.includes('id="official-links-heading"'),'Official links must be presented as a labelled section');
 const window={};vm.runInNewContext(fs.readFileSync(path.join(dist,'translations.js'),'utf8'),{window});
+vm.runInNewContext(fs.readFileSync(path.join(dist,'top-voters-translations.js'),'utf8'),{window});
 const data=window.ARUNIKA_TRANSLATIONS,codes=['id','en','ja','es','ar','th','vi','ms','ko','zh-TW'];
 assert.deepEqual(Object.keys(data),codes);const keys=Object.keys(data.id);
 for(const code of codes){assert.deepEqual(Object.keys(data[code]),keys);assert(keys.every(k=>typeof data[code][k]==='string'&&data[code][k].trim()));new Intl.NumberFormat(code).format(1234);}
@@ -71,4 +72,5 @@ productCards.forEach((card,index)=>{
 
 execFileSync(process.execPath,[path.join(root,'scripts/check-leaderboard.mjs')],{stdio:'inherit'});
 execFileSync(process.execPath,[path.join(root,'scripts/check-feature-slider.mjs')],{stdio:'inherit'});
+execFileSync(process.execPath,[path.join(root,'scripts/check-top-voters.mjs')],{stdio:'inherit'});
 console.log('Passed: syntax, assets, routes, ARUNIKA branding, 10 languages, persistence, fallback, Arabic RTL, Workers assets, Pages output, community links, rank order/prices/WhatsApp links.');

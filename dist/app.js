@@ -106,7 +106,7 @@ function renderBoard(){
  $('#rank-note').textContent=t('Diperbarui')+' '+new Date(board.updatedAt).toLocaleString(arunikaLocale());
 }
 window.refreshLocale=()=>{
- renderStatus();renderBoard();window.refreshFeatureSliderLocale?.();
+ renderStatus();renderBoard();window.refreshFeatureSliderLocale?.();window.refreshTopVotersLocale?.();
  if(cfg.mapUrl&&https(cfg.mapUrl)){text('#map-badge','Map dikonfigurasi');text('#map-external','Buka peta di tab baru ↗')}
 };
 window.refreshLocale();route();
