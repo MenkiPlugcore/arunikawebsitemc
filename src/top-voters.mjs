@@ -85,7 +85,7 @@ export async function topVotersResponse(request, ctx, options = {}) {
   try {
     const upstream = await fetchImpl(VOTE_URL, {
       method:'GET', headers:{Accept:'text/html', 'User-Agent':'ARUNIKA-Website/1.0'},
-      redirect:'error', signal:AbortSignal.timeout(15000)
+      redirect:'manual', signal:AbortSignal.timeout(15000)
     });
     reason = 'source_body';
     const html = await limitedHtml(upstream);
@@ -113,10 +113,7 @@ export async function topVotersResponse(request, ctx, options = {}) {
       if (error?.name === 'TimeoutError' || error?.name === 'AbortError') reason = 'source_timeout';
       else if (/illegal invocation/i.test(error?.message || '')) reason = 'runtime_invocation';
     }
-    const transportError = reason === 'source_unreachable'
-      ? String(error?.message || error?.name || 'Unknown transport error').replace(/https?:\/\/\S+/g, '[source]').slice(0,180)
-      : undefined;
-    return new Response(JSON.stringify({error:'Top voting is temporarily unavailable', reason, transportError}), {
+    return new Response(JSON.stringify({error:'Top voting is temporarily unavailable', reason}), {
       status:503, headers:{...responseHeaders, 'Cache-Control':'no-store', 'Retry-After':'60'}
     });
   }

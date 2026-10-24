@@ -27,7 +27,7 @@ const cache={match:async()=>stored?.clone(),put:async(key,value)=>{
 }};
 const fetchImpl=async(url,options)=>{
  fetchCount++;assert.equal(url,VOTE_URL);assert.equal(options.method,'GET');
- assert.equal(options.redirect,'error');assert.equal(options.headers.Cookie,undefined);
+ assert.equal(options.redirect,'manual');assert.equal(options.headers.Cookie,undefined);
  return new Response(sample,{headers:{'Content-Type':'text/html; charset=utf-8'}});
 };
 const first=await topVotersResponse(request,null,{cache,fetchImpl,now:()=>now});
@@ -48,6 +48,7 @@ try {
  assert.equal(defaultFetchResponse.status,200);
 } finally {globalThis.fetch=originalFetch;}
 for(const upstream of [
+ ()=>new Response('',{status:302,headers:{Location:'https://example.net/untrusted'}}),
  ()=>new Response('Not Found',{status:404}),
  ()=>new Response('{"secret":"never forward upstream errors"}',{headers:{'Content-Type':'application/json'}}),
  ()=>new Response('Challenge',{headers:{'Content-Type':'text/html'}}),
