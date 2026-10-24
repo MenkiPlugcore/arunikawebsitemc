@@ -56,7 +56,7 @@
   try{
    const endpoint=new URL(window.ARUNIKA_CONFIG?.topVotersEndpoint||'/api/top-voters',location.origin);
    if(endpoint.origin!==location.origin)throw Error('Same-origin endpoint required');
-   const response=await fetch(endpoint.href,{credentials:'omit',cache:'no-store',signal:AbortSignal.timeout(10000)});
+   const response=await fetch(endpoint.href,{credentials:'omit',cache:'no-store',signal:AbortSignal.timeout(20000)});
    if(!response.ok)throw Error('Unavailable');
    data=validate(await response.json());mode='ready';
   }catch{data=null;mode='failed';}
