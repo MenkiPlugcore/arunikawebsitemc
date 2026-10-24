@@ -81,15 +81,23 @@ export async function topVotersResponse(request, ctx, options = {}) {
   if (cache) {
     try { const cached = await cache.match(cacheKey); if (cached) return cached; } catch { /* Fetch without edge cache. */ }
   }
+  let reason = 'source_unreachable';
   try {
     const upstream = await fetchImpl(VOTE_URL, {
       method:'GET', headers:{Accept:'text/html', 'User-Agent':'ARUNIKA-Website/1.0'},
       redirect:'error', signal:AbortSignal.timeout(7000)
     });
-    if (!upstream.ok || !/text\/html/i.test(upstream.headers.get('Content-Type') || '')) {
-      throw Error('Voter source unavailable');
+    const html = await limitedHtml(upstream);
+    if (/<title>\s*Just a moment|checking your browser|verify you are human|id=["']challenge-form/i.test(html)) {
+      reason = 'source_verification_required';
+      throw Error('Voter source requires verification');
     }
-    const players = parseTopVotersHtml(await limitedHtml(upstream));
+    reason = `source_http_${upstream.status}`;
+    if (!upstream.ok) throw Error('Voter source unavailable');
+    reason = 'source_format';
+    if (!/text\/html/i.test(upstream.headers.get('Content-Type') || '')) throw Error('Unexpected voter format');
+    reason = 'source_data';
+    const players = parseTopVotersHtml(html);
     const result = new Response(JSON.stringify({
       source:'Minecraft-MP', sourceUrl:VOTE_URL, period:'current',
       fetchedAt:new Date(options.now?.() ?? Date.now()).toISOString(), players
@@ -100,7 +108,7 @@ export async function topVotersResponse(request, ctx, options = {}) {
     }
     return result;
   } catch {
-    return new Response(JSON.stringify({error:'Top voting is temporarily unavailable'}), {
+    return new Response(JSON.stringify({error:'Top voting is temporarily unavailable', reason}), {
       status:503, headers:{...responseHeaders, 'Cache-Control':'no-store', 'Retry-After':'60'}
     });
   }

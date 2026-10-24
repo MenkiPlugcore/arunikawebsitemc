@@ -50,7 +50,10 @@ for(const upstream of [
 ]){
  const result=await topVotersResponse(request,null,{cache:null,fetchImpl:async()=>upstream()});
  assert.equal(result.status,503);assert.equal(result.headers.get('Cache-Control'),'no-store');
- assert.equal(await result.text(),'{"error":"Top voting is temporarily unavailable"}');
+ const failure=await result.json();
+ assert.equal(failure.error,'Top voting is temporarily unavailable');
+ assert.match(failure.reason,/^source_(unreachable|http_\d{3}|format|data|verification_required)$/);
+ assert(!JSON.stringify(failure).includes('never forward upstream errors'));
 }
 console.log('Passed: monthly voter extraction, genuine empty states, invalid/challenge payloads, names/totals, fixed upstream, bounded response, cache, read-only route, and unavailable-source behavior.');
 
