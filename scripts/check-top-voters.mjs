@@ -41,6 +41,12 @@ assert.equal(first.headers.get('X-Content-Type-Options'),'nosniff');
 await topVotersResponse(request,null,{cache,fetchImpl});assert.equal(fetchCount,1,'Cached rankings must avoid another upstream request');
 const post=await topVotersResponse(new Request(request,{method:'POST'}),null,{cache,fetchImpl});
 assert.equal(post.status,405);assert.equal(post.headers.get('Allow'),'GET');assert.equal(fetchCount,1);
+const originalFetch=globalThis.fetch;
+try {
+ globalThis.fetch=function(){assert.equal(this,globalThis,'The default fetch must retain its Worker receiver');return Promise.resolve(new Response(sample,{headers:{'Content-Type':'text/html'}}));};
+ const defaultFetchResponse=await topVotersResponse(request,null,{cache:null});
+ assert.equal(defaultFetchResponse.status,200);
+} finally {globalThis.fetch=originalFetch;}
 for(const upstream of [
  ()=>new Response('Not Found',{status:404}),
  ()=>new Response('{"secret":"never forward upstream errors"}',{headers:{'Content-Type':'application/json'}}),
@@ -52,7 +58,7 @@ for(const upstream of [
  assert.equal(result.status,503);assert.equal(result.headers.get('Cache-Control'),'no-store');
  const failure=await result.json();
  assert.equal(failure.error,'Top voting is temporarily unavailable');
- assert.match(failure.reason,/^source_(unreachable|http_\d{3}|format|data|verification_required)$/);
+ assert.match(failure.reason,/^(source_(unreachable|timeout|body|http_\d{3}|format|data|verification_required)|runtime_invocation)$/);
  assert(!JSON.stringify(failure).includes('never forward upstream errors'));
 }
 console.log('Passed: monthly voter extraction, genuine empty states, invalid/challenge payloads, names/totals, fixed upstream, bounded response, cache, read-only route, and unavailable-source behavior.');

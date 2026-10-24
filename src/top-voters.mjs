@@ -75,7 +75,7 @@ export async function topVotersResponse(request, ctx, options = {}) {
   if (request.method !== 'GET') return new Response(JSON.stringify({error:'Method not allowed'}), {
     status:405, headers:{...responseHeaders, 'Cache-Control':'no-store', Allow:'GET'}
   });
-  const fetchImpl = options.fetchImpl || globalThis.fetch;
+  const fetchImpl = options.fetchImpl || ((...args) => globalThis.fetch(...args));
   const cache = options.cache === undefined ? globalThis.caches?.default : options.cache;
   const cacheKey = new Request(new URL('/api/top-voters', request.url));
   if (cache) {
@@ -87,6 +87,7 @@ export async function topVotersResponse(request, ctx, options = {}) {
       method:'GET', headers:{Accept:'text/html', 'User-Agent':'ARUNIKA-Website/1.0'},
       redirect:'error', signal:AbortSignal.timeout(7000)
     });
+    reason = 'source_body';
     const html = await limitedHtml(upstream);
     if (/<title>\s*Just a moment|checking your browser|verify you are human|id=["']challenge-form/i.test(html)) {
       reason = 'source_verification_required';
@@ -107,7 +108,11 @@ export async function topVotersResponse(request, ctx, options = {}) {
       if (ctx?.waitUntil) ctx.waitUntil(write); else await write;
     }
     return result;
-  } catch {
+  } catch (error) {
+    if (reason === 'source_unreachable') {
+      if (error?.name === 'TimeoutError' || error?.name === 'AbortError') reason = 'source_timeout';
+      else if (/illegal invocation/i.test(error?.message || '')) reason = 'runtime_invocation';
+    }
     return new Response(JSON.stringify({error:'Top voting is temporarily unavailable', reason}), {
       status:503, headers:{...responseHeaders, 'Cache-Control':'no-store', 'Retry-After':'60'}
     });
