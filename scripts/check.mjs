@@ -53,10 +53,10 @@ assert(fs.existsSync(path.join(dist,'assets/arunika-hero.png')));
 const workerConfig=fs.readFileSync(path.join(root,'wrangler.toml'),'utf8');
 assert(!workerConfig.includes('pages_build_output_dir'),'Workers config must not use the Pages output key');
 assert.match(workerConfig,/\[assets\][\s\S]*directory\s*=\s*"\.\/dist"/,'Workers must serve dist as static assets');
-assert.match(workerConfig,/main\s*=\s*"\.\/src\/worker\.mjs"/,'Workers entrypoint must bridge leaderboard requests');
+assert.match(workerConfig,/main\s*=\s*"\.\/src\/worker\.mjs"/,'Workers entrypoint must serve voting requests');
 assert.match(workerConfig,/binding\s*=\s*"ASSETS"/,'Workers assets binding is required');
 const siteConfig=fs.readFileSync(path.join(dist,'config.js'),'utf8');
-assert(siteConfig.includes("leaderboardEndpoint: '/api/leaderboard'"),'Leaderboard must use same-origin API');
+assert(siteConfig.includes("topVotersEndpoint: '/api/top-voters'"),'Top Voting must use same-origin API');
 assert.equal(fs.readFileSync(path.join(root,'wrangler.pages.toml'),'utf8').match(/pages_build_output_dir\s*=\s*"([^"]+)"/)[1],'./dist');
 
 const productCards=[...html.matchAll(/<a class="rank-card"([^>]+)>/g)].map(([,attrs])=>Object.fromEntries([...attrs.matchAll(/([\w-]+)="([^"]*)"/g)].map(([,name,value])=>[name,value])));
@@ -70,7 +70,6 @@ productCards.forEach((card,index)=>{
  assert.equal(card.target,'_blank');assert(card.rel.includes('noopener'));assert(card.rel.includes('noreferrer'));
 });
 
-execFileSync(process.execPath,[path.join(root,'scripts/check-leaderboard.mjs')],{stdio:'inherit'});
 execFileSync(process.execPath,[path.join(root,'scripts/check-feature-slider.mjs')],{stdio:'inherit'});
 execFileSync(process.execPath,[path.join(root,'scripts/check-top-voters.mjs')],{stdio:'inherit'});
 console.log('Passed: syntax, assets, routes, ARUNIKA branding, 10 languages, persistence, fallback, Arabic RTL, Workers assets, Pages output, community links, rank order/prices/WhatsApp links.');

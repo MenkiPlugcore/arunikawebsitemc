@@ -2,11 +2,11 @@
 
 Website pusat informasi server Minecraft ARUNIKA. Tema hijau dan emas, logo ARUNIKA transparan pada navbar dan hero, dan pilihan 10 bahasa: Indonesia, English, Japanese, Spanish, Arabic, Thai, Vietnamese, Malay, Korean, Chinese Traditional.
 
-Halaman: Beranda, About, Leaderboard, Store, dan Live Map. Tata letak bahasa Arab memakai RTL. Preferensi bahasa tersimpan di browser. Tidak membutuhkan framework atau dependency untuk menjalankan website.
+Halaman: Beranda, About, dan Store. Tata letak bahasa Arab memakai RTL. Preferensi bahasa tersimpan di browser. Tidak membutuhkan framework atau dependency untuk menjalankan website.
 
 ## Deploy ke Cloudflare Workers (sesuai project saat ini)
 
-Konfigurasi default `wrangler.toml` memakai **Workers Static Assets** untuk melayani isi folder `dist`. Website statis ini tidak membutuhkan script Worker `main`.
+Konfigurasi default `wrangler.toml` memakai **Workers Static Assets** untuk melayani isi folder `dist`. Entrypoint `src/worker.mjs` melayani API Top Voting, sementara halaman dan aset diteruskan ke binding `ASSETS`.
 
 Di pengaturan build Cloudflare untuk project yang sudah terhubung ke repository **MenkiPlugcore/arunikawebsitemc**, gunakan:
 
@@ -26,9 +26,11 @@ Konfigurasi default:
 ```toml
 name = "arunikawebsitemc"
 compatibility_date = "2026-10-13"
+main = "./src/worker.mjs"
 
 [assets]
 directory = "./dist"
+binding = "ASSETS"
 ```
 
 Log yang menjalankan `npx wrangler deploy` menunjukkan alur Workers. Key `pages_build_output_dir` khusus Pages tidak dipakai di konfigurasi default karena tidak menyediakan direktori assets bagi alur Workers.
@@ -67,13 +69,12 @@ window.ARUNIKA_CONFIG = {
   bedrockAddress: '',
   bedrockPort: '',
   statusEndpoint: '',
-  leaderboardEndpoint: '',
-  mapUrl: '',
+  topVotersEndpoint: '/api/top-voters',
   discordUrl: ''
 };
 ```
 
-Alamat, data statistik, dan map masih kosong. Website menampilkan **belum terhubung** sampai sumber data asli dipasang. Store menampilkan 6 rank dari kartu yang diberikan pengelola, diurutkan dari termurah: Dawn Rp15.000, Sunflare Rp35.000, Meadow Rp65.000, Horizon Rp120.000, Aurora Rp150.000, Zenith Rp300.000. Klik gambar atau kartu membuka WhatsApp admin 6285703163488 dengan nama rank, harga, dan kolom nickname; tidak mengirim pesan otomatis atau memproses pembayaran di website. Bagian rancangan Cosmetics & bundles di Store sudah dihapus; fitur cosmetic, furniture, mount, dan pet dijelaskan pada halaman About. Logo navbar tersedia di `dist/assets/arunika-hero.png`; ilustrasi ARUNIKA dengan pulau Minecraft pada hero tersedia di `dist/assets/arunika-world-hero.png`. Nama pemain dan alamat server tidak diterjemahkan. Bahasa peta eksternal mengikuti layanan peta tersebut.
+Alamat dan monitor server dikonfigurasi melalui file ini. Website menampilkan **belum terhubung** jika endpoint status belum dipasang. Store menampilkan 6 rank dari kartu yang diberikan pengelola, diurutkan dari termurah: Dawn Rp15.000, Sunflare Rp35.000, Meadow Rp65.000, Horizon Rp120.000, Aurora Rp150.000, Zenith Rp300.000. Klik gambar atau kartu membuka WhatsApp admin 6285703163488 dengan nama rank, harga, dan kolom nickname; tidak mengirim pesan otomatis atau memproses pembayaran di website. Bagian rancangan Cosmetics & bundles di Store sudah dihapus; fitur cosmetic, furniture, mount, dan pet dijelaskan pada halaman About. Logo navbar tersedia di `dist/assets/arunika-hero.png`; ilustrasi ARUNIKA dengan pulau Minecraft pada hero tersedia di `dist/assets/arunika-world-hero.png`. Nama pemain dan alamat server tidak diterjemahkan.
 
 ### Status server
 
@@ -96,14 +97,6 @@ Kolom **LATENSI MONITOR** menampilkan waktu respons permintaan HTTPS dari browse
 
 Contoh di atas hanya dokumentasi, bukan data yang ditampilkan. Backend/plugin monitoring harus memasok data asli dengan waktu terkini. Website meminta pembaruan setiap 30 detik dan menolak data yang berusia lebih dari 120 detik. `latencyMs` adalah hasil pengukuran monitor, bukan ping dalam game masing-masing pengunjung. Gangguan koneksi ditampilkan sebagai status tidak tersedia.
 
-### Live Leaderboard (Minecraft 1.21.11)
-
-Leaderboard web memakai `/api/leaderboard` (same-origin Cloudflare Worker). Worker membaca `https://map.cadera.site/leaderboard.json`, memvalidasi waktu pembaruan dan data, lalu mengirim JSON dari origin website sendiri sehingga tidak membutuhkan CORS pada squaremap.
-
-**Data tidak muncul sampai exporter di server Minecraft terpasang.** Jalankan plugin **CdrLeaderboardExport** (lihat paket dan panduan terpisah), yang menulis `plugins/squaremap/web/leaderboard.json` setiap 60 detik. Plugin membaca statistik Minecraft untuk waktu bermain dan player kills serta saldo dari penyedia ekonomi yang terhubung melalui Vault. Plugin tidak membuat data palsu: jika Vault / ekonomi belum tersedia, leaderboard saldo kosong. Pemain Java dan Bedrock disertakan ketika profil offline mereka ditemukan oleh Bukkit/Paper.
-
-Setelah memasang plugin, tes URL `https://map.cadera.site/leaderboard.json`. Jika tampil JSON dengan `updatedAt` terkini, tes `https://<domain-website>/api/leaderboard`. Jika rute Worker belum tersedia, pastikan build Cloudflare menggunakan `wrangler.toml` (Workers Static Assets, bukan Pages), mengandung `main = "./src/worker.mjs"` dan `binding = "ASSETS"`. Tidak diperlukan database, port, atau token baru.
-
 ### Top Voting di halaman utama
 
 Halaman Beranda menampilkan hingga 10 pemilih teratas bulan berjalan beserta jumlah vote,
@@ -123,27 +116,8 @@ sementara tidak tersedia dan tautan vote tetap dapat digunakan; tidak ada pering
 Nama pemain ditampilkan sebagai teks dan tidak diterjemahkan. Judul/status mendukung 10 bahasa dan RTL.
 
 Pemeriksaan `npm run check` mencakup parser tabel, data kosong yang valid, batas ukuran,
-respons gagal/challenge, nama/angka tidak valid, cache, route GET saja, dan regresi leaderboard server.
+respons gagal/challenge, nama/angka tidak valid, cache, dan route GET saja.
 Jika nanti memakai API resmi Minecraft-MP, simpan API key sebagai Worker secret; jangan di `dist/config.js`.
-
-### Leaderboard
-
-`leaderboardEndpoint` harus mendukung HTTPS/CORS dan menghasilkan JSON:
-
-```json
-{
-  "updatedAt": "2026-10-13T00:00:00Z",
-  "playtime": [{ "name": "ExamplePlayer", "value": 10 }],
-  "balance": [],
-  "kills": []
-}
-```
-
-`playtime` memakai satuan jam. Nilai diurutkan dari terbesar, maksimal 100 pemain per kategori. Data yang berusia lebih dari lima menit ditolak. API harus diperbarui oleh sumber data server asli.
-
-### Live Map
-
-Isi `mapUrl` dengan URL HTTPS map server yang mengizinkan iframe. Website juga menyediakan tautan membuka map di tab baru. Privasi dan lokasi pemain ditentukan layanan map.
 
 ## Pemeriksaan
 
